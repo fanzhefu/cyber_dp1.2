@@ -1,0 +1,29 @@
+﻿# The powershell code used by lab 4, 5, 7
+#
+# "Write-Host('Hello, World! We love DP1.2')" will be our malisious code
+# Compress and convert it to base64
+<#
+$input = 'Write-Host("Hello, World! We love DP1.2")'
+$bytes = [System.Text.Encoding]::UTF8.GetBytes($input)
+$ms = New-Object IO.MemoryStream
+$gzip = New-Object IO.Compression.GZipStream($ms, [IO.Compression.CompressionMode]::Compress)
+$gzip.Write($bytes, 0, $bytes.Length)
+$gzip.Close()
+$compressedBytes = $ms.ToArray()
+$base64 = [Convert]::ToBase64String($compressedBytes)
+Write-Output $base64
+
+# Here is result: H4sIAAAAAAAEAAsvyixJ1fXILy7RUPJIzcnJ11EIzy/KSVFUCE9VyMkvS1VwCTDUM1LSBADXCNdTKQAAAA==
+
+# The code used by lab
+#powershell.exe -noprofile -windowstyle hiden -noninteractive -executionpolicy bypass "&[ScriptBlock]::Create((New-Object IO.StreamReader(New-Object IO.Compression.GZipStream((New-Object IO.MemoryStream(,[Convert]::FromBase64String('H4sIAAAAAAAEAAsvyixJ1fXILy7RUPJIzcnJ11EIzy/KSVFUCE9VyMkvS1VwCTDUM1LSBADXCNdTKQAAAA=='))), [IO.Compression.CompressionMode]::Decompress))).ReadToEnd())"
+#>
+
+#[ScriptBlock]::Create((New-Object IO.StreamReader(New-Object IO.Compression.GZipStream((New-Object IO.MemoryStream(,[Convert]::FromBase64String('H4sIAAAAAAAEAAsvyixJ1fXILy7RUPJIzcnJ11EIzy/KSVFUCE9VyMkvS1VwCTDUM1LSBADXCNdTKQAAAA=='))), [IO.Compression.CompressionMode]::Decompress))).ReadToEnd())
+
+# Make it readable
+$b64 = [Convert]::FromBase64String('H4sIAAAAAAAEAAsvyixJ1fXILy7RUPJIzcnJ11EIzy/KSVFUCE9VyMkvS1VwCTDUM1LSBADXCNdTKQAAAA==')
+$ms = New-Object IO.MemoryStream(,$b64)
+$gunzip = New-Object IO.Compression.GZipStream($ms, [IO.Compression.CompressionMode]::Decompress)
+$bytes = New-Object IO.StreamReader($gunzip)
+[ScriptBlock]::Create(($bytes).ReadToEnd())
