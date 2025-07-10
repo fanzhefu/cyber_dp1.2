@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+import os
+import json
+import argparse
+from datetime import datetime
+import re
+
+def sanitize_filename(s: str) -> str:
+    """
+    Turn a timestamp or text into a safe filename segment.
+    """
+    # Replace non-alphanumeric with underscores
+    return re.sub(r'[^0-9A-Za-z\-]+', '_', s).strip('_')
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Extract PowerShell ScriptBlockText from NDJSON and save as .ps1 files."
+    )
+    parser.add_argument(
+        '-i', '--input', required=True, help='Input NDJSON file'
+    )
+    parser.add_argument(
+        '-o', '--outdir', required=True, help='Output directory for .ps1 files'
+    )
+    parser.add_argument(
+        '-c', '--combined', help='Optional combined output file'
+    )
+    args = parser.parse_args()
+
+    os.makedirs(args.outdir, exist_ok=True)
+
+    combined_handle = None
+    if args.combined:
+        combined_handle = open(args.combined, 'w', encoding='utf-8')
+
+    count = 0
+    with open(args.input, 'r', encoding='utf-8') as f:
+        for line_number, line in enumerate(f, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                evt = json.loads(line)
+            except json.JSONDecodeError as e:
+                print(f"[!] Skipping line {line_number}: invalid JSON ({e})")
+                continue
+
+            script = evt.get('ScriptBlockText') or evt.get('scriptblocktext')
+            if not script:
+                continue
+
+            # Build a filename using timestamp if available, else fallback to counter
+            ts = evt.get('TimeCreated')
+            if ts:
+                # Expecting ISO-8601: "2025-07-01T12:34:56.789Z"
+                base = sanitize_filename(ts)
+            else:
+                base = f"script_{count+1:04d}"
+
+            filename = os.path.join(args.outdir, f"{base}.ps1")
+            try:
+                with open(filename, 'w', encoding='utf-8') as out:
+                    out.write(script)
+                print(f"[+] Wrote {filename}")
+                count += 1
+
+                if combined_handle:
+                    combined_handle.write(f"\n\n# --- Event {count}: {ts or 'N/A'} ---\n")
+                    combined_handle.write(script)
+            except OSError as e:
+                print(f"[!] Failed to write {filename}: {e}")
+
+    if combined_handle:
+        combined_handle.close()
+        print(f"[+] Combined output saved to {args.combined}")
+
+    print(f"[✓] Extracted {count} script block(s).")
+
+if __name__ == '__main__':
+    main()
