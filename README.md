@@ -1,1 +1,1 @@
-for learning and teahing only.
+for learning and teaching only.
